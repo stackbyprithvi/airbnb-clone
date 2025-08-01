@@ -1,0 +1,26 @@
+{
+  "name": "airbnb-clone",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PrithviRajPamdey/airbnb-clone.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PrithviRajPamdey/airbnb-clone/issues"
+  },
+  "homepage": "https://github.com/PrithviRajPamdey/airbnb-clone#readme",
+  "description": "",
+  "dependencies": {
+    "express": "^5.1.0",
+    "mongoose": "^8.17.0",
+    "nodemon": "^3.1.10"
+  }
+}
