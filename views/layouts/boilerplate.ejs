@@ -13,13 +13,18 @@
 </head>
 <body>
    <%- include('../includes/navbar') %>
-    <div class="container">
-        <%- body %>
-    </div>
+   <%- include('../includes/flash') %>
+
+<main class="flex-grow-1">
+  <div class="container">
+      <%- body %>
+  </div>
+</main>
 
     <%- include('../includes/footer') %>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+    <script src="/js/scriptValidate.js"></script>
 </body>
 
 </html>

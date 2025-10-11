@@ -23,3 +23,37 @@
          <button class="btn btn-dark offset-5">Delete</button>
       </form>
    </div>
+  
+   <div class="col-6 offset-3 mt-5">
+      <form action="/listings/<%= listing._id %>/reviews" method="POST" novalidate class="needs-validation">
+         <h3>Add a Review</h3>
+         <div class="mb-3">
+            <label for="comment" class="form-label">Comment</label>
+         <textarea class="form-control" id="comment" rows="3" name="review[comment]" required></textarea>
+      </div>
+      <div class="mb-3">
+         <label for="rating" class="form-label">Rating</label>
+         <input type="number" class="form-control" id="rating" name="review[rating]" min="1" max="5" required>
+      </div>
+      <button type="submit" class="btn btn-dark">Submit Review</button>
+  </form>
+
+  <div class="mt-5">
+      <h3>Reviews</h3>
+      <% if (listing.reviews.length === 0) { %>
+         <p>No reviews yet. Be the first to review!</p>
+      <% } else { %>
+         <% listing.reviews.forEach(function(review) { %>
+            <div class="card mb-3">
+               <div class="card-body">
+                  <p class="card-text"><strong>Rating:</strong> <%= review.rating %> / 5</p>
+                  <p class="card-text"><strong>Comment:</strong> <%= review.comment %></p>
+                  <p class="card-text"><small class="text-muted">Reviewed on <%= new Date(review.createdAt).toLocaleDateString() %></small></p>
+               </div>
+            </div>
+         <% }); %>
+      <% } %>
+
+
+
+   </div>
