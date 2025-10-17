@@ -2,7 +2,6 @@
   "engines": {
     "node": "23.8.0"
   },
-
   "name": "airbnb-clone",
   "version": "1.0.0",
   "main": "index.js",
@@ -23,7 +22,7 @@
   "homepage": "https://github.com/PrithviRajPamdey/airbnb-clone#readme",
   "description": "",
   "dependencies": {
-    "cloudinary": "^2.7.0",
+    "cloudinary": "^1.41.3",
     "connect-flash": "^0.1.1",
     "dotenv": "^17.2.3",
     "ejs": "^3.1.10",
