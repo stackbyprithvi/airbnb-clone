@@ -1,7 +1,13 @@
-const express=require('express');
-const router=require('express').Router();
-const Listing=require('../models/listing');
-const isLoggedIn=require('../middleware/isLoggedIn');
+const express = require('express');
+const router = express.Router();
+const Listing = require('../models/listing');
+const isLoggedIn = require('../middleware/isLoggedIn');
+const methodOverride = require('method-override');
+router.use(methodOverride('_method'));
+const multer =require('multer');
+const {storage}=require('../cloudConfig');
+const upload =multer({storage});
+
 
 router.get('/',async (req,res)=>{
   const allListings=  await Listing.find({});
@@ -14,23 +20,49 @@ router.get('/new',isLoggedIn,(req,res)=>{
 })
 
     //SHOW ROUTE
-router.get('/:id',async (req,res)=>{
-    const {id}=req.params;
-    const listing=await Listing.findById(id).populate('reviews');
-    res.render('listings/show.ejs',{listing});
-})
+router.get('/:id', async (req,res)=>{
+    try {
+        const { id } = req.params;
+        const listing = await Listing.findById(id)
+            .populate('owner')
+            .populate('reviews');
 
-router.post('/',async (req,res,next)=>{
-    try{
-        
-        const newListing= new Listing(req.body.listing);
-        await newListing.save();
-        res.redirect('/listings');
+        if(!listing){
+            return res.status(404).send("Listing not found");
+        }
+
+        res.render('listings/show.ejs', { listing, currentUser: req.user });
+    } catch(err){
+        console.error("Show route error:", err);
+        res.status(500).send("Something went wrong!!");
     }
-    catch(err){
-        next(err);
+});
+
+
+router.post('/', upload.single('listing[image]'), async (req, res, next) => {
+  try {
+    const newListing = new Listing(req.body.listing);
+
+    // Set the owner to the currently logged-in user
+    newListing.owner = req.user._id;
+
+    if (req.file) {
+      newListing.image = {
+        url: req.file.path,      // full Cloudinary URL
+        filename: req.file.filename
+      };
     }
-})
+
+    await newListing.save();
+    req.flash('success', 'Listing created successfully!');
+    res.redirect('/listings');
+  } catch (err) {
+    console.error("Error uploading image:", err);
+    next(err);
+  }
+});
+
+
 
 //EDIT LISTING ROUTE
 router.get('/:id/edit',isLoggedIn,async (req,res)=>{
@@ -39,11 +71,17 @@ router.get('/:id/edit',isLoggedIn,async (req,res)=>{
     res.render('listings/edit.ejs',{listing});
 })
 
-router.put('/:id',async (req,res)=>{
-    const {id}=req.params;
-    await Listing.findByIdAndUpdate(id,req.body.listing);
-    res.redirect(`/listings/${id}`);
-})
+router.put('/:id', isLoggedIn, async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const updatedListing = await Listing.findByIdAndUpdate(id, req.body.listing, { new: true, runValidators: true });
+    req.flash('success', 'Listing updated successfully!');
+    res.redirect(`/listings/${updatedListing._id}`);
+  } catch (err) {
+    next(err);
+  }
+});
+
 
 //DELETE LISTING ROUTE
 router.delete('/:id',isLoggedIn,async (req,res)=>{

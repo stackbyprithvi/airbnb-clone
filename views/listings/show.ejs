@@ -1,59 +1,71 @@
 <% layout('layouts/boilerplate') %>
-   <div class="row">
-      <div class="col-8 offset-3 mt-3">
-         <H3>Listing Details</H3>
-      </div>
-      <div class="card col-6 offset-3">
-         <img src="<%= listing.image %>" class="card-img-top show-image" alt="listing image">
-         <div class="card-body">
-            <p class="card-text">
-               <b>
-                  <%=listing.title %>
-               </b> <br>
-               <%= listing.description %> <br>
-                  <%= listing.location %>, <%= listing.country %> <br>
-                        Price: &#8377; <%= listing.price.toLocaleString("en-IN") %> per night <br>
-            </p>
-         </div>
-      </div>
-   </div>
-   <div class="btns">
-      <a href="/listings/<%= listing._id %>/edit " class="btn btn-dark  col-1 offset-3 edit-btn" >Edit </a>
-      <form action="/listings/<%= listing._id %>?_method=DELETE" method="POST">
-         <button class="btn btn-dark offset-5">Delete</button>
-      </form>
-   </div>
-  
-   <div class="col-6 offset-3 mt-5">
-      <form action="/listings/<%= listing._id %>/reviews" method="POST" novalidate class="needs-validation">
-         <h3>Add a Review</h3>
-         <div class="mb-3">
-            <label for="comment" class="form-label">Comment</label>
-         <textarea class="form-control" id="comment" rows="3" name="review[comment]" required></textarea>
-      </div>
-      <div class="mb-3">
-         <label for="rating" class="form-label">Rating</label>
-         <input type="number" class="form-control" id="rating" name="review[rating]" min="1" max="5" required>
-      </div>
-      <button type="submit" class="btn btn-dark">Submit Review</button>
+
+<div class="row">
+  <div class="col-8 offset-3 mt-3">
+    <h3>Listing Details</h3>
+  </div>
+
+  <div class="card col-6 offset-3">
+    <img src="<%= listing.image?.url || '/placeholder.jpg' %>" 
+         class="card-img-top show-image" 
+         alt="listing image">
+    <div class="card-body">
+      <p class="card-text">
+        <b><%= listing.title %></b> <br>
+        <%= listing.description %> <br>
+        <%= listing.location %>, <%= listing.country %> <br>
+        Price: &#8377; <%= listing.price.toLocaleString("en-IN") %> per night <br>
+      </p>
+      <p class="card-text">
+        <small class="text-muted">
+          Posted by <%= listing.owner?.email || 'Unknown' %>
+        </small>
+      </p>
+    </div>
+  </div>
+</div>
+
+<% if(currentUser && listing.owner && currentUser._id.toString() === listing.owner._id.toString()) { %>
+  <div class="btns mt-3">
+    <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark col-1 offset-3 edit-btn">Edit</a>
+    <form action="/listings/<%= listing._id %>?_method=DELETE" method="POST" style="display:inline;">
+      <button class="btn btn-dark offset-1">Delete</button>
+    </form>
+  </div>
+<% } %>
+
+<div class="col-6 offset-3 mt-5">
+  <form action="/listings/<%= listing._id %>/reviews" method="POST" novalidate class="needs-validation">
+    <h3>Add a Review</h3>
+    <div class="mb-3">
+      <label for="comment" class="form-label">Comment</label>
+      <textarea class="form-control" id="comment" rows="3" name="review[comment]" required></textarea>
+    </div>
+    <div class="mb-3">
+      <label for="rating" class="form-label">Rating</label>
+      <input type="number" class="form-control" id="rating" name="review[rating]" min="1" max="5" required>
+    </div>
+    <button type="submit" class="btn btn-dark">Submit Review</button>
   </form>
 
   <div class="mt-5">
-      <h3>Reviews</h3>
-      <% if (listing.reviews.length === 0) { %>
-         <p>No reviews yet. Be the first to review!</p>
-      <% } else { %>
-         <% listing.reviews.forEach(function(review) { %>
-            <div class="card mb-3">
-               <div class="card-body">
-                  <p class="card-text"><strong>Rating:</strong> <%= review.rating %> / 5</p>
-                  <p class="card-text"><strong>Comment:</strong> <%= review.comment %></p>
-                  <p class="card-text"><small class="text-muted">Reviewed on <%= new Date(review.createdAt).toLocaleDateString() %></small></p>
-               </div>
-            </div>
-         <% }); %>
-      <% } %>
-
-
-
-   </div>
+    <h3>Reviews</h3>
+    <% if(!listing.reviews || listing.reviews.length === 0) { %>
+      <p>No reviews yet. Be the first to review!</p>
+    <% } else { %>
+      <% listing.reviews.forEach(function(review) { %>
+        <div class="card mb-3">
+          <div class="card-body">
+            <p class="card-text"><strong>Rating:</strong> <%= review.rating %> / 5</p>
+            <p class="card-text"><strong>Comment:</strong> <%= review.comment %></p>
+            <p class="card-text">
+              <small class="text-muted">
+                Reviewed on <%= new Date(review.createdAt).toLocaleDateString() %>
+              </small>
+            </p>
+          </div>
+        </div>
+      <% }); %>
+    <% } %>
+  </div>
+</div>
