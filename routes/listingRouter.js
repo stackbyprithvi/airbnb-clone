@@ -17,6 +17,27 @@ router.get('/',async (req,res)=>{
   res.render('listings/index.ejs',{allListings});
     })
 
+router.get('/search', async (req, res) => {
+  try {
+    const query = req.query.q;
+    const listings = await Listing.find({
+      $or: [
+        { location: { $regex: query, $options: 'i' } },
+        { country: { $regex: query, $options: 'i' } }
+      ]
+    });
+
+    res.render('listings/index', { allListings: listings });
+  } catch (err) {
+    console.error(err);
+    res.redirect('/listings');
+  }
+});
+
+
+
+
+
     //CREATE LISTING ROUTE
 router.get('/new',isLoggedIn,(req,res)=>{
     res.render('listings/new.ejs');
@@ -143,5 +164,9 @@ router.delete('/:id',isLoggedIn,async (req,res)=>{
 router.use((err,req,res,next)=>{
     res.status(500).send("Something went wrong!!");
 });
+
+
+
+
 
 module.exports=router;
