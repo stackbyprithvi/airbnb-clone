@@ -1,0 +1,91 @@
+<% layout('layouts/boilerplate') %>
+
+<div class="container mt-5 text-center">
+
+  <!-- Hero Section with Photo -->
+  <section class="hero py-5 d-flex flex-column align-items-center">
+    <img src="/images/myphoto.jpeg" alt="My Photo" class="rounded-circle mb-3" style="width:150px; height:150px; object-fit:cover;">
+    <h1 class="display-4">Welcome to My Airbnb Clone</h1>
+    <p class="lead mt-3">
+      Explore my full-stack web app built with <b>Node.js, Express, MongoDB, and EJS</b>.
+      Features include user authentication, listing creation, search, map integration, and more!
+    </p>
+    <a href="#listings" class="btn btn-primary btn-lg mt-3">View Listings</a>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features mt-5">
+    <h2 class="mb-4">Features</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+      <div class="col">
+        <div class="card h-100 text-center p-3">
+          <i class="fa-solid fa-magnifying-glass fa-2xl mb-3"></i>
+          <h5 class="card-title">Search Listings</h5>
+          <p class="card-text">Search by location or country, with real-time results.</p>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card h-100 text-center p-3">
+          <i class="fa-solid fa-map-location-dot fa-2xl mb-3"></i>
+          <h5 class="card-title">Interactive Maps</h5>
+          <p class="card-text">View listings on a map powered by Stadia Maps API.</p>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card h-100 text-center p-3">
+          <i class="fa-solid fa-user-plus fa-2xl mb-3"></i>
+          <h5 class="card-title">User Authentication</h5>
+          <p class="card-text">Sign up, log in, and manage your own listings securely.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call-to-action -->
+  <section class="cta mt-5 mb-5">
+    <h3>Try it yourself!</h3>
+    <p>Create listings, explore others, and see a real full-stack app in action.</p>
+    <a href="#listings" class="btn btn-success btn-lg">Go to Listings</a>
+  </section>
+
+  <!-- Listings Section -->
+  <section id="listings" class="mt-5">
+    <h3 class="mb-4">All Listings</h3>
+
+    <% if(allListings.length === 0){ %>
+      <p>No listings found</p>
+    <% } %>
+
+    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
+      <% for (let listing of allListings) { %>
+        <a href="/listings/<%= listing._id %>" class="listing-link">
+          <div class="card col mb-4">
+            <img
+              src="<%= listing.image.url %>"
+              class="card-img-top"
+              alt="listing_image"
+              style="height: 20rem; object-fit: cover;"
+            />
+            <div class="card-img-overlay"></div>
+            <div class="card-body">
+              <p class="card-text">
+                <b><%= listing.title %></b> <br />
+                <%= listing.location %>, <%= listing.country %>
+              </p>
+            </div>
+          </div>
+        </a>
+      <% } %>
+    </div>
+  </section>
+</div>
+
+<style>
+.hero h1 { color: #ff385c; }
+.features i { color: #ff385c; }
+.cta h3 { margin-top: 2rem; color: #222; }
+.hero img {
+  border: 3px solid #ff385c;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+</style>

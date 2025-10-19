@@ -19,7 +19,7 @@ router.get('/',async (req,res)=>{
 
 router.get('/search', async (req, res) => {
   try {
-    const query = req.query.q;
+    const query = req.query.q || "";
     const listings = await Listing.find({
       $or: [
         { location: { $regex: query, $options: 'i' } },

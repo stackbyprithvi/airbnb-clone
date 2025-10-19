@@ -68,6 +68,21 @@ app.use((req,res,next)=>{
 });
 
 
+
+const Listing = require('./models/listing');
+
+app.get('/', async (req, res) => {
+  try {
+    const allListings = await Listing.find({});
+    res.render('home', { allListings });
+  } catch (err) {
+    console.error(err);
+    res.redirect('/listings'); 
+  }
+});
+
+
+
 app.use('/listings',listingRouter);
 app.use('/listings/:id/reviews',reviewRouter);
 app.use('/',userRouter);
