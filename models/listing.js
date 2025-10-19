@@ -10,6 +10,9 @@ filename:String
     price: Number,
     location: String,
     country: String,
+lat: Number,   // latitude
+lng: Number,   // longitude
+  
     reviews: [ 
         {
             type: mongoose.Schema.Types.ObjectId,

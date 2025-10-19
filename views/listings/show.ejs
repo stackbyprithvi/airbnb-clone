@@ -67,5 +67,33 @@
         </div>
       <% }); %>
     <% } %>
+
+    <div class="mt-5">
+      <h3>Where you will be staying</h3>
+      <div id="map" style="height: 400px; width: 100%;"></div>
+    </div>
   </div>
 </div>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+  // Coordinates passed from route
+  let listingLat = <%= lat %>;
+  let listingLng = <%= lng %>;
+  const map = L.map('map').setView([listingLat, listingLng], 13);
+
+  // Tile layer with mapToken properly injected
+  L.tileLayer("https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png?api_key=<%= mapToken %>", {
+    attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a> &copy; OSM',
+    maxZoom: 20
+  }).addTo(map);
+
+  // Marker
+  L.marker([listingLat, listingLng])
+    .addTo(map)
+    .bindPopup("<b><%= listing.title %></b><br><%= listing.location %>, <%= listing.country %>")
+    .openPopup();
+</script>
+
+

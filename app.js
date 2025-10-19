@@ -15,25 +15,21 @@ const userRouter=require('./routes/user');
 const listingRouter = require('./routes/listingRouter');
 const reviewRouter = require('./routes/reviewRouter');
 const mongoose =require('mongoose');
+const MongoStore = require('connect-mongo');
 
 const dbUrl = process.env.ATLASDB_URL;
 
+
 async function main() {
   try {
-    await mongoose.connect(dbUrl, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    });
-    console.log("Connected to MongoDB Atlas");
+    await mongoose.connect(dbUrl);
+    console.log("✅ Connected to MongoDB Atlas");
   } catch (err) {
-    console.error("Error connecting to MongoDB Atlas:", err.message);
+    console.error("❌ MongoDB connection error:", err.message);
+    process.exit(1); // stop app if DB fails
   }
 }
 main();
-
-
-
-
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -43,7 +39,18 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.engine('ejs',ejsMate);
 
 
-app.use(session({ secret: 'secret', resave: false, saveUninitialized: true }));
+const store=MongoStore.create({
+    mongoUrl:dbUrl,
+    crypto:{
+        secret: 'secret',
+    },
+    touchAfter:24*60*60
+})
+store.on('error',function(e){
+    console.log('SESSION STORE ERROR',e);
+});
+
+app.use(session({ store,secret: 'secret', resave: false, saveUninitialized: true }));
 
 
 app.use(passport.initialize());
@@ -62,10 +69,8 @@ app.use((req,res,next)=>{
 
 
 app.use('/listings',listingRouter);
-
 app.use('/listings/:id/reviews',reviewRouter);
 app.use('/',userRouter);
-
 
 
 
