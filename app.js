@@ -26,7 +26,7 @@ async function main() {
     console.log("✅ Connected to MongoDB Atlas");
   } catch (err) {
     console.error("❌ MongoDB connection error:", err.message);
-    process.exit(1); // stop app if DB fails
+    process.exit(1); 
   }
 }
 main();
@@ -69,17 +69,9 @@ app.use((req,res,next)=>{
 
 
 
-const Listing = require('./models/listing');
 
-app.get('/', async (req, res) => {
-  try {
-    const allListings = await Listing.find({});
-    res.render('home', { allListings });
-  } catch (err) {
-    console.error(err);
-    res.redirect('/listings'); 
-  }
-});
+
+
 
 
 
